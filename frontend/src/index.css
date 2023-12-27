@@ -1,0 +1,89 @@
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgb(243 244 246);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(209 213 219);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(107 114 128);
+  }
+}
+
+.cl-card > *:last-of-type {
+  display: none !important;
+}
+.cl-card {
+  box-shadow: 0 0 !important;
+  margin: 0 !important;
+}
+.cl-navbar {
+  display: none !important;
+}
+.cl-pageScrollBox {
+  padding: 0 !important;
+}
+.cl-rootBox,
+.cl-card,
+.cl-navbar,
+.cl-pageScrollBox {
+  width: 100% !important;
+}
+/* .settings-page .cl-profilePage.cl-profilePage__security {
+  display: none;
+} */
+.cl-header {
+  display: none !important;
+}
+.cl-page {
+  padding: 4px !important;
+}
+.cl-navbarMobileMenuRow {
+  display: none;
+}
+.signin-page .cl-header {
+  display: block !important;
+}
+.settings-page .cl-profileSection__activeDevices,
+.settings-page .cl-profileSection__danger,
+.settings-page .cl-profileSection__profile {
+  display: none;
+}
+.profile-page .cl-profileSection {
+  display: none !important;
+}
+.profile-page .cl-profileSection__profile {
+  display: block !important;
+}
+.profile-page .cl-avatarImageActionsRemove {
+  display: none !important;
+}
+.profile-page .cl-profileSectionTitle {
+  display: none !important;
+}
+.devices-page .cl-profileSection {
+  display: none !important;
+}
+.devices-page .cl-profileSection__activeDevices,
+.devices-page .cl-profileSection__danger {
+  display: block !important;
+}
+.devices-page .cl-profileSectionContent > div {
+  display: flex !important;
+  flex-flow: column !important;
+  gap: 16px !important;
+  margin-left: 0 !important;
+}
+.devices-page .cl-activeDevice {
+  flex-flow: column !important;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

@@ -1,0 +1,7 @@
+add block contact functionality
+Create Rooms in chats page make MODAL and select users from contact
+
+
+
+
+turn on react strict mode after development in main.jsx
