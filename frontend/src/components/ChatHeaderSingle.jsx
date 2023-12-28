@@ -7,31 +7,63 @@ import SharedMedia from "./ChatSharedMedia";
 import { FaRegImage } from "react-icons/fa6";
 import SharedFiles from "./ChatSharedFiles";
 import { GoPaperclip } from "react-icons/go";
-import { useState } from "react";
-export default function ChatHeaderSingle({ onClick }) {
+import { useContext, useState } from "react";
+import { ChatContext } from "../contexts/chat";
+import { UsersContext } from "../contexts/users";
+import { useAuth } from "@clerk/clerk-react";
+export default function ChatHeader({ onClick }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState();
   const toggleOpen = () => setOpen(!open);
+  const { userId } = useAuth();
+  const { multipleUsers, roomData } = useContext(ChatContext);
+  const { findUser } = useContext(UsersContext);
+  const roomUsers = roomData?.users
+    ?.filter((id) => id != userId)
+    ?.map((id) => findUser(id));
 
   return (
     <a className=" z-10 sticky top-0 px-4 py-3 max-lg:pl-1 cursor-pointer bg-gray-100  ">
-      <div className=" flex align-middle gap-2 ">
-        <button
-          className=" px-1 hover:bg-gray-200 rounded lg:hidden"
-          onClick={() => navigate(-1)}
-        >
-          <IoIosArrowBack fontSize={24} />
-        </button>
-        <img
-          className=" aspect-square h-12 rounded-full "
-          src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-          alt=""
-        />
+      <div
+        className={`" flex ${
+          multipleUsers && "flex-col"
+        } align-middle  gap-2 "`}
+      >
+        <div className="flex overflow-hidden">
+          <button
+            className=" px-1 hover:bg-gray-200 rounded mr-2 lg:hidden"
+            onClick={() => navigate(-1)}
+          >
+            <IoIosArrowBack fontSize={24} />
+          </button>
+          <div className=" p-1">
+          {roomUsers
+            ?.map((user) => user?.imageUrl)
+            .map((url, i) => (
+              <img
+              key={i}
+                className="inline-block  h-10 w-10 rounded-full  object-cover"
+                src={url}
+                alt=""
+              />
+            ))}</div>
+        </div>
         <div className=" flex  flex-grow  items-center relative">
-          <div className=" pl-4 flex flex-col flex-grow" onClick={onClick}>
-            <p className=" font-semibold flex-grow text-start">Pradyut Das</p>
-            <p className="  text-sm text-start">Last Seen Today 12:30PM</p>
-          </div>
+          {multipleUsers ? (
+            <div className=" flex flex-col flex-grow" onClick={onClick}>
+              <p className=" font-semibold flex-grow text-start">{roomData?.name}</p>
+              <p className="  text-sm text-start">Last Seen Today 12:30PM</p>
+            </div>
+          ) : (
+            <div className=" pl-4 flex flex-col flex-grow" onClick={onClick}>
+              <p className=" font-semibold flex-grow text-start">
+                {roomUsers
+                  ?.map((user) => user?.firstName + " " + user?.lastName)
+                  .join(", ")}
+              </p>
+              <p className="  text-sm text-start">Last Seen Today 12:30PM</p>
+            </div>
+          )}
           <button
             onClick={toggleOpen}
             className="absolute right-0  cursor-pointer hover:bg-gray-900 rounded p-2 hover:text-white"

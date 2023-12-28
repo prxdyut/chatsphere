@@ -1,7 +1,7 @@
-const connectToMongoDB = require('./mongodb')
+const connectToMongoDB = require("./mongodb");
 const mongoose = require("mongoose");
 
-connectToMongoDB()
+connectToMongoDB();
 const chatroomsSchema = new mongoose.Schema({
   roomId: String,
   users: [String],
@@ -14,7 +14,13 @@ const messagesSchema = new mongoose.Schema({
   user: String,
   type: String,
   content: String,
+  userId: String,
   created: Date,
+  fileUrl: String,
+  fileSize: Number,
+  fileType: String,
+  id: String,
+  room: String,
 });
 
 const chatroom = mongoose.model("Chatrooms", chatroomsSchema);

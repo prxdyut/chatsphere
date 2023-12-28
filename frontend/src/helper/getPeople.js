@@ -11,11 +11,11 @@ export default async function getPeople(savePeople, users) {
   );
   
   const PEOPLE = PEOPLE_DATA.map(
-    ({ id, username, imageUrl, firstName, lastName }) => ({
-      id,
-      username,
-      imageUrl,
-      name: firstName + " " + lastName,
+    (data) => ({
+      username : data?.username,
+      imageUrl: data?.imageUrl,
+      name: data?.firstName + " " + data?.lastName,
+      id: data?.id
     })
   );
   savePeople(PEOPLE);

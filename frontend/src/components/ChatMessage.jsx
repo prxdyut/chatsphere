@@ -1,4 +1,8 @@
-export function RecievedWithAvatar({ content }) {
+import { useContext } from "react";
+import { ChatContext } from "../contexts/chat";
+
+export function Recieved({ content, created}) {
+  const { multipleUsers } = useContext(ChatContext);
   return (
     <div className=" max-w-[60%]  flex gap-2">
       <img
@@ -7,27 +11,27 @@ export function RecievedWithAvatar({ content }) {
         alt=""
       />
       <div className="px-4 flex flex-col pr-6 py-2 gap-2 bg-white w-max rounded-2xl rounded-tl-none">
-        {content}
-        <p className=" text-right opacity-75 text-xs">11:23 PM</p>
+        {content} <p className=" opacity-75 text-xs">
+        {new Date(created).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
+      </p>
       </div>
     </div>
   );
 }
 
-export function RecievedWithoutAvatar({ content }) {
+export function Sent({ content, created }) {
   return (
-    <div className="px-4 max-w-[60%]  flex flex-col pr-6 py-2 gap-2 bg-white w-max rounded-2xl rounded-tl-none">
+    <div className="px-4 text-right flex flex-col max-w-[60%] pr-6 py-2 gap-2 self-end bg-gray-200 w-max rounded-2xl  rounded-br-none">
       {content}
-      <p className=" text-right opacity-75 text-xs">11:23 PM</p>
-    </div>
-  );
-}
-
-export function Sent({ content }) {
-  return (
-    <div className="px-4 flex flex-col max-w-[60%] pr-6 py-2 gap-2 self-end bg-gray-200 w-max rounded-2xl  rounded-br-none">
-      {content}
-      <p className=" opacity-75 text-xs">11:23 PM</p>
+      <p className=" opacity-75 text-xs">
+        {new Date(created).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
+      </p>
     </div>
   );
 }

@@ -7,6 +7,7 @@ export default function newRoom(users, name, by, onError, onSuccess, rooms, setR
     users,
     name,
     by,
+    created: new Date()
   });
 
   var requestOptions = {
@@ -16,7 +17,7 @@ export default function newRoom(users, name, by, onError, onSuccess, rooms, setR
     redirect: "follow",
   };
 
-  fetch("http://localhost:5000/room", requestOptions)
+  fetch("http://localhost:5000" + "/room", requestOptions)
     .then((response) => response.json())
     .then((e) => {
       if (e.error) {

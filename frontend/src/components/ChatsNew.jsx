@@ -1,21 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { IoAddOutline } from "react-icons/io5";
-import Divider from "./Divider";
 import { BsXLg } from "react-icons/bs";
 import { useAuth } from "@clerk/clerk-react";
-import {
-  redirect,
-  redirectDocument,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { PeopleContext } from "../contexts/people";
-import { checkInTheArrayIfTheFirstLetterMatches } from "../helper/checkInTheArrayIfTheFirstLetterMatches";
-import { LuSearch } from "react-icons/lu";
 import { TbMessageCircle2 } from "react-icons/tb";
 import { RiErrorWarningLine } from "react-icons/ri";
 import newRoom from "../helper/newRoom";
 import { RoomsContext } from "../contexts/rooms";
+import PeopleNew from "./PeopleNew";
 
 function PeopleList({ selected, setSelected }) {
   const { people } = useContext(PeopleContext);
@@ -50,11 +43,18 @@ function PeopleList({ selected, setSelected }) {
 
   return (
     <div className="px-2 flex flex-col gap-2">
-      {people.map((data, i) => (
-        <React.Fragment key={i}>
-          <Person {...data} />
-        </React.Fragment>
-      ))}
+      {people.length > 0 ? (
+        people.map((data, i) => (
+          <React.Fragment key={i}>
+            <Person {...data} />
+          </React.Fragment>
+        ))
+      ) : (
+        <div className=" p-4 flex flex-col gap-2 items-center justify-center">
+          <p>Add Contacts to Make a room</p>
+          <PeopleNew />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,9 +1,5 @@
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import ChatContainer from "../components/ChatContainer";
-import ChatsList from "../components/ChatsList";
-import ChatsSearch from "../components/ChatsSearch";
-import Header from "../components/Header";
-import Layout from "../layout";
 import Chats from "./chats";
 import { useContext, useEffect } from "react";
 import { ChatContext } from "../contexts/chat";

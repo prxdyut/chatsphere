@@ -1,8 +1,6 @@
-// import ChatAreaSingle from "../components/ChatAreaSingleSingle";
-import React from "react";
 import Header from "../components/Header";
 import Layout from "../layout";
-import { SignOutButton, UserProfile, useAuth } from "@clerk/clerk-react";
+import { UserProfile, useAuth } from "@clerk/clerk-react";
 import SignoutButton from "../components/SignOutButton";
 
 export default function Profile() {

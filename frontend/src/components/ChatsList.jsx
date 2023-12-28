@@ -43,7 +43,6 @@ export default function ChatsList({}) {
 
   function ChatMultiple({ users, name, _id: id }) {
     const [currentUsers, setCurrentUsers] = useState([]);
-    console.log(currentUsers);
     useEffect(() => {
       getUsers(users, userId, setCurrentUsers, allUsers);
     }, []);
@@ -52,8 +51,9 @@ export default function ChatsList({}) {
       <div className={`" cursor-pointer rounded block p-4  w-full hover:bg-gray-100 ${room == id && 'bg-gray-200'}  "`}>
         <div className="flex flex-col align-middle gap-2">
           <div className="flex -space-x-2 overflow-hidden">
-            {currentUsers.map(({ imageUrl }) => (
+            {currentUsers.map(({ imageUrl }, i) => (
               <img
+              key={i}
                 className=" aspect-square h-10 w-10 rounded-full  object-cover"
                 src={imageUrl}
                 alt=""
@@ -78,14 +78,14 @@ export default function ChatsList({}) {
 
   return (
     <div className=" overflow-y-auto">
-      {single.map((chat) => (
-        <Link to={"/room?roomId=" + chat._id}>
+      {single.map((chat, i) => (
+        <Link to={"/room?roomId=" + chat._id} key={i}>
           <ChatSingle {...chat} />
         </Link>
       ))}
       <Divider title={"Groups"} position={"left"} />
-      {multiple.map((chat) => (
-        <Link to={"/room?roomId=" + chat._id}>
+      {multiple.map((chat, i) => (
+        <Link to={"/room?roomId=" + chat._id} key={i}>
           <ChatMultiple {...chat} />
         </Link>
       ))}

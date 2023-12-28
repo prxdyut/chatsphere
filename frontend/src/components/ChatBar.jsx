@@ -3,13 +3,16 @@ import { FaRegImage } from "react-icons/fa6";
 import { GoPaperclip } from "react-icons/go";
 import { ChatContext } from "../contexts/chat";
 import { useAuth } from "@clerk/clerk-react";
+import Home from "../pages";
+import ChatSendImage from "./ChatSendImage";
+import ChatSendFile from "./ChatSendFile";
 export default function ChatBar(params) {
   const { userId } = useAuth();
-  const { sendMessage } = useContext(ChatContext);
+  const { sendMessage, messages } = useContext(ChatContext);
   const [input, setInput] = useState();
-
-  const handleSendText = () =>
-    sendMessage({ type: "text", content: input.trim(), userId });
+  
+  const handleSendText = () =>{
+    sendMessage({ type: "text", content: input.trim(), userId }); setInput('')}
 
   return (
     <div id="chatBar" className=" bottom-0 sticky">
@@ -17,18 +20,23 @@ export default function ChatBar(params) {
         Your message
       </label>
       <div className="flex lg:mb-3  max-lg:py-3 lg:mx-4 lg:rounded gap-2 items-center py-2 px-3 bg-gray-900 ">
-        <button
-          type="button"
-          className="p-2 text-gray-200 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-200 "
-        >
-          <FaRegImage fontSize={20} />
-        </button>
-        <button
+        <ChatSendImage
+          button={
+            <button
+              type="button"
+              className="p-2 text-gray-200 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-200 "
+            >
+              <FaRegImage fontSize={20} />
+            </button>
+          }
+        />
+        <ChatSendFile button={<button
           type="button"
           className="p-2 text-gray-200 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-200 "
         >
           <GoPaperclip fontSize={20} />
-        </button>
+        </button>} />
+        
         <textarea
           id="chat text"
           rows="1"
