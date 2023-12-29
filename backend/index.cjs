@@ -30,13 +30,16 @@ app.get("/", async (req, res) => {
 let ALL_CHATROOMS = [];
 
 app.get("/rooms", async (req, res) => {
-  try {
-    const RESULT = await chatroom.find();
-    res.json({ data: RESULT }).status(204);
-  } catch (error) {
-    console.error("Error handling route:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+  const userId = req.query.userId;
+  if (userId) {
+    try {
+      const RESULT = await chatroom.find({users: userId});
+      res.json({ data: RESULT }).status(204);
+    } catch (error) {
+      console.error("Error handling route:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  } else res.json({ data: [] }).status(204);
 });
 app.post("/room", async (req, res) => {
   const body = req.body;
@@ -97,26 +100,24 @@ app.post("/uploadfile", upload.single("file"), (req, res) => {
 });
 
 io.on("connection", async (socket) => {
-  
   socket.on("join", async ({ room }) => {
     socket.join(room);
-    const roomData = await chatroom.findById(room)
+    const roomData = await chatroom.findById(room);
     socket.emit("joined", roomData);
-    const messages = await message.find({room})
+    const messages = await message.find({ room });
     socket.emit("recieve", messages);
   });
 
   socket.on("send", async (data) => {
     socket.to(data.room).emit("recieve", [data]);
-    const res = new message(data)
-    res.save()
+    const res = new message(data);
+    res.save();
   });
 
   socket.on("disconnect", (reason) => {
     console.log("Socket disconnected:", reason);
   });
 });
-
 
 app.use((err, req, res, next) => {
   console.error(err);

@@ -8,7 +8,7 @@ export default function ChatProvider({ children }) {
   const [roomData, setRoomData] = useState(null);
   const [newMessage, setNewMessage] = useState(false);
   const [messages, setMessages] = useState([]);
-  const socket = io("http://localhost:5000");
+  const socket = io("http://195.35.23.178:5000");
   const uniqueMessages = [...new Set(messages.map(({ id }) => id))].map((id) =>
     messages.find((message) => message.id == id)
   );

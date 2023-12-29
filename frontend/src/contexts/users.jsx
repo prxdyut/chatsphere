@@ -4,7 +4,7 @@ export const UsersContext = React.createContext();
 export default function UsersProvider({ children }) {
   const [users, setUsers] = useState([]);
   const loadUsers = () =>
-    fetch("http://localhost:5000" + "/users")
+    fetch("http://195.35.23.178:5000" + "/users")
       .then((res) => res.json())
       .then(({ data }) => setUsers(data));
 

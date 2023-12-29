@@ -9,7 +9,7 @@ export default function SharedMedia({ button, withPreview }) {
   const [id] = useState(parseInt(Math.random() * 100));
   const { messages } = useContext(ChatContext);
   const imageMessages = messages.filter((message) => message.type == "image");
-  console.log(imageMessages);
+
   function Image({ url }) {
     return (
       <img
@@ -77,11 +77,17 @@ export default function SharedMedia({ button, withPreview }) {
             </label>
           </div>
           <div className=" grid grid-cols-3 lg:grid-cols-7 pb-4 gap-2 max-h-96 overflow-y-auto pr-5 px-4">
-            {imageMessages.map((message, i) => (
-              <React.Fragment key={i}>
-                <Image url={message.fileUrl} />
-              </React.Fragment>
-            ))}
+            {imageMessages.length > 0 ? (
+              imageMessages.map((message, i) => (
+                <React.Fragment key={i}>
+                  <Image url={message.fileUrl} />
+                </React.Fragment>
+              ))
+            ) : (
+              <p className=" col-span-3 lg:col-span-7">
+                Images have not been shared yet!
+              </p>
+            )}
           </div>
         </div>
       </div>

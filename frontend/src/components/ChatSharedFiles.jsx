@@ -87,11 +87,13 @@ export default function SharedFiles({ button, withPreview }) {
             </label>
           </div>
           <div className=" grid grid-cols-3 lg:grid-cols-7 pb-4 gap-2 max-h-96 overflow-y-auto pr-5 px-4">
-            {fileMessages.map((message, i) => (
+            {fileMessages.length > 0 ?fileMessages.map((message, i) => (
               <React.Fragment key={i}>
                 <File {...message} />
               </React.Fragment>
-            ))}
+            )) :  <p className=" col-span-3 lg:col-span-7">
+            Files have not been shared yet!
+          </p>}
           </div>
         </div>
       </div>

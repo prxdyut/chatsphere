@@ -23,7 +23,7 @@ export default function ChatHeader({ onClick }) {
     ?.map((id) => findUser(id));
 
   return (
-    <a className=" z-10 sticky top-0 px-4 py-3 max-lg:pl-1 cursor-pointer bg-gray-100  ">
+    <div className=" z-10 sticky top-0 px-4 py-3 max-lg:pl-1 cursor-pointer bg-gray-100  ">
       <div
         className={`" flex ${
           multipleUsers && "flex-col"
@@ -98,6 +98,6 @@ export default function ChatHeader({ onClick }) {
           </div>
         </div>
       </div>
-    </a>
+    </div>
   );
 }

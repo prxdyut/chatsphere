@@ -2,15 +2,19 @@ import React, { useContext } from "react";
 import Divider from "./Divider";
 import { checkInTheArrayIfTheFirstLetterMatches } from "../helper/checkInTheArrayIfTheFirstLetterMatches";
 import { PeopleContext } from "../contexts/people";
-
+import { RoomsContext } from "../contexts/rooms";
+import {useNavigate} from 'react-router-dom'
 export default function PeopleList({}) {
   const { people } = useContext(PeopleContext);
+  const { rooms } = useContext(RoomsContext);
+  const singleUserRooms = rooms.filter(({ users }) => users.length == 2);
 
   const Alphabets = Array.from({ length: 26 }, (_, index) =>
     String.fromCharCode("A".charCodeAt(0) + index)
   );
-
-  function Person({ name, image }) {
+const navigate = useNavigate()
+  function Person({ id, name, image }) {
+    console.log(singleUserRooms.find(({ users }) => users.includes(id)));
     return (
       <div className=" cursor-pointer block p-2 rounded  w-full hover:bg-gray-200">
         <div className=" flex align-middle justify-center items-center">
@@ -40,9 +44,9 @@ export default function PeopleList({}) {
           >
             <Divider title={char} />
             {checkInTheArrayIfTheFirstLetterMatches(people, "name", char).map(
-              ({ name, imageUrl }, i) => (
+              ({ name, imageUrl, id }, i) => (
                 <React.Fragment key={i}>
-                  <Person name={name} image={imageUrl} />
+                  <Person name={name} image={imageUrl} id={id} />
                 </React.Fragment>
               )
             )}

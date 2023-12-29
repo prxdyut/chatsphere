@@ -17,7 +17,7 @@ export default function newRoom(users, name, by, onError, onSuccess, rooms, setR
     redirect: "follow",
   };
 
-  fetch("http://localhost:5000" + "/room", requestOptions)
+  fetch("http://195.35.23.178:5000" + "/room", requestOptions)
     .then((response) => response.json())
     .then((e) => {
       if (e.error) {
@@ -25,7 +25,6 @@ export default function newRoom(users, name, by, onError, onSuccess, rooms, setR
       } else {
         setRooms([...rooms, e])
         onSuccess(e)
-        console.log(e)
       }
     })
     .catch((error) => onError(JSON.stringify(error)));

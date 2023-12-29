@@ -7,11 +7,12 @@ export const RoomsContext = React.createContext();
 export default function RoomsProvider({ children }) {
   const [rooms, setRooms] = useState([]);
   const { userId } = useAuth();
+ 
   const reloadRooms = () => getRooms(userId, setRooms);
 
   useEffect(() => {
     reloadRooms();
-  }, []);
+  }, [userId]);
 
   return (
     <RoomsContext.Provider value={{ rooms, setRooms }}>

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import FsLightbox from "fslightbox-react";
 import getFileType from './../helper/getFileType'
 import convertBytes from './../helper/convertBytes'
+import { Link } from "react-router-dom";
 export function MessageText({ content }) {
   return (
     <p className=" cursor-default opacity-80 hover:opacity-100">{content}</p>
@@ -44,7 +45,7 @@ export function MessageFile({ content, fileUrl, fileType, fileSize }) {
   
 
   return (
-    <div className=" " href={fileUrl} target="_blank" >
+    <a className=" " href={fileUrl} target="_blank" >
       <div className="hover:bg-gray-200 group cursor-pointer -ml-2 -mr-3 w-52  max-lg:max-w-[50vw] lg:w-60  flex items-end p-2 rounded-lg bg-white  gap-1">
         <div className=" flex flex-col gap-1">
           <p className=" text-xs text-left">{convertBytes(fileSize)}</p>
@@ -58,6 +59,6 @@ export function MessageFile({ content, fileUrl, fileType, fileSize }) {
       <p className=" mt-2 text-xs opacity-60 cursor-default hover:opacity-100">
         {content}
       </p>
-    </div>
+    </a>
   );
 }
