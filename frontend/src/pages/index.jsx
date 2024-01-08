@@ -33,7 +33,7 @@ export default function Home() {
       formData.append("file", e.target.files[0]);
       setUploading(true);
       const res = await axios
-        .post("http://localhost:5000"+"/uploadfile", formData, {
+        .post("https://api.chatsphere.pradyutdas.online"+"/uploadfile", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .catch((error) => {

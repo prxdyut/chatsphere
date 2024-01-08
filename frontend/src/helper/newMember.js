@@ -13,7 +13,7 @@ export default function newMember(users, room, onError, onSuccess, update) {
     redirect: "follow",
   };
 
-  fetch("http://localhost:5000" + "/room", requestOptions)
+  fetch("https://api.chatsphere.pradyutdas.online" + "/room", requestOptions)
     .then((response) => response.json())
     .then((e) => {
       if (e.error) {
