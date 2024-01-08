@@ -9,6 +9,8 @@ import { useContext } from "react";
 import { UsersContext } from "../contexts/users";
 import { ChatContext } from "../contexts/chat";
 import { useAuth } from "@clerk/clerk-react";
+import ChatsAddToRoom from "./ChatsAddToRoom";
+import ChatsRemoveFromRoom from "./ChatsRemoveFromRoom";
 export default function ChatInformation({ open, toggle }) {
   const { userId } = useAuth();
   const { multipleUsers, roomData } = useContext(ChatContext);
@@ -67,21 +69,21 @@ export default function ChatInformation({ open, toggle }) {
           </p>
           <p className=" text-sm mb-2">
             {roomUsers
-              ?.map((user) => '@'+user?.username || user?.emailAddresses[0].emailAddress)
+              ?.map(
+                (user) =>
+                  "@" + user?.username || user?.emailAddresses[0].emailAddress
+              )
               .join(", ")}
           </p>
-          <p className=" text-sm">Created : {new Date(roomData?.created).toLocaleDateString()}</p>
+          <p className=" text-sm">
+            Created : {new Date(roomData?.created).toLocaleDateString()}
+          </p>
         </div>
         <SharedMedia withPreview />
         <SharedFiles withPreview />
-        <div className=" flex justify-end gap-2">
-          {/* <button
-            onClick={() => {}}
-            className="flex gap-2 uppercase text-xs font-semibold  bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded w-max"
-          >
-            <MdBlock fontSize={16} /> Block
-          </button> */}
-
+        <div className=" flex justify-end lg:gap-2 max-lg:flex-col max-lg:items-end">
+          <ChatsRemoveFromRoom />
+          <ChatsAddToRoom />
           <RWebShare
             data={{
               text: "@pradyut",
@@ -89,7 +91,7 @@ export default function ChatInformation({ open, toggle }) {
               title: "Pradyut Das",
             }}
           >
-            <div className="flex gap-2 uppercase cursor-pointer text-xs font-semibold bg-gray-700 hover:bg-gray-900 text-white px-4 py-2 rounded w-max">
+            <div className="flex gap-2 h-max uppercase cursor-pointer text-xs font-semibold bg-gray-700 hover:bg-gray-900 text-white px-4 py-2 rounded w-max">
               <BsShare fontSize={16} /> Share Contact
             </div>
           </RWebShare>

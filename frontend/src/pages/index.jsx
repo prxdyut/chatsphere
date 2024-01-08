@@ -7,16 +7,6 @@ import { LuUpload } from "react-icons/lu";
 import { useAuth } from "@clerk/clerk-react";
 import { ChatContext } from "../contexts/chat";
 
-function getBase64(file, callback) {
-  var reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onload = function () {
-    callback(reader.result);
-  };
-  reader.onerror = function (error) {
-    console.log("Error: ", error);
-  };
-}
 export default function Home() {
   const { userId } = useAuth();
   const { sendMessage } = useContext(ChatContext);
@@ -43,7 +33,7 @@ export default function Home() {
       formData.append("file", e.target.files[0]);
       setUploading(true);
       const res = await axios
-        .post("http://195.35.23.178:5000"+"/uploadfile", formData, {
+        .post("http://localhost:5000"+"/uploadfile", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .catch((error) => {

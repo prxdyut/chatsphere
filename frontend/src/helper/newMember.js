@@ -1,17 +1,13 @@
-export default function newRoom(users, name, by, onError, onSuccess, rooms, setRooms) {
-
+export default function newMember(users, room, onError, onSuccess, update) {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify({
-    users,
-    name,
-    by,
-    created: new Date()
+    users, room
   });
 
   var requestOptions = {
-    method: "POST",
+    method: "PUT",
     headers: myHeaders,
     body: raw,
     redirect: "follow",
@@ -23,8 +19,8 @@ export default function newRoom(users, name, by, onError, onSuccess, rooms, setR
       if (e.error) {
         onError(e.error);
       } else {
-        setRooms([...rooms, e])
-        onSuccess(e)
+        onSuccess(`Added ${e.modifiedCount} Member`);
+        update()
       }
     })
     .catch((error) => onError(JSON.stringify(error)));

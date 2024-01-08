@@ -71,9 +71,7 @@ const {users} = useContext(UsersContext)
               text: "@pradyut",
               url: `${window?.origin}/people?add=user`,
               title: "Pradyut Das",
-            }}
-            onClick={() => console.log("shared successfully!")}
-          >
+            }}  >
             <div className=" relative group">
               <input
                 value={`${window?.origin}/people?add=pradyut`}

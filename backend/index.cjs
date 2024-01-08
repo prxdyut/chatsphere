@@ -18,22 +18,18 @@ app.use(cors());
 
 app.get("/", async (req, res) => {
   try {
-    const RESULT = new chatroom({ pradyut: "yo", date: new Date() });
-    RESULT.save();
-    res.json(RESULT).status(204);
+    res.json({ status: "working", ok: true }).status(204);
   } catch (error) {
     console.error("Error handling route:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-let ALL_CHATROOMS = [];
-
 app.get("/rooms", async (req, res) => {
   const userId = req.query.userId;
   if (userId) {
     try {
-      const RESULT = await chatroom.find({users: userId});
+      const RESULT = await chatroom.find({ users: userId });
       res.json({ data: RESULT }).status(204);
     } catch (error) {
       console.error("Error handling route:", error);
@@ -41,6 +37,7 @@ app.get("/rooms", async (req, res) => {
     }
   } else res.json({ data: [] }).status(204);
 });
+
 app.post("/room", async (req, res) => {
   const body = req.body;
   try {
@@ -49,6 +46,40 @@ app.post("/room", async (req, res) => {
       RESULT.save();
       res.json(RESULT).status(204);
     } else res.status(500).json({ error: "Please Add Users" });
+  } catch (error) {
+    console.error("Error handling route:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.put("/room", async (req, res) => {
+  const body = await req.body;
+  try {
+    if (body?.users.length > 0) {
+      const RESULT = await chatroom.updateOne(
+        { _id: body.room },
+        { $addToSet: { users: body.users } }
+      );
+      res.json(RESULT).status(204);
+      // res.status(500).json({ error: "Please Select Users" });
+    } else res.status(500).json({ error: "Please Select Users" });
+  } catch (error) {
+    console.error("Error handling route:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.delete("/room", async (req, res) => {
+  const body = await req.body;
+  try {
+    if (body?.users.length > 0) {
+      const RESULT = await chatroom.updateOne(
+        { _id: body.room },
+        { $pullAll: { users: body.users } }
+      );
+      res.json(RESULT).status(204);
+      // res.status(500).json({ error: "Please Select Users" });
+    } else res.status(500).json({ error: "Please Select Users" });
   } catch (error) {
     console.error("Error handling route:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -99,7 +130,18 @@ app.post("/uploadfile", upload.single("file"), (req, res) => {
   res.status(200).json(data);
 });
 
+let status = {};
+
 io.on("connection", async (socket) => {
+  let currentUserId;
+  socket.on("active", async ({ userId }) => {
+    if (userId) {
+      currentUserId = userId;
+      status[userId] = "online";
+      io.emit("status", status);
+    }
+  });
+
   socket.on("join", async ({ room }) => {
     socket.join(room);
     const roomData = await chatroom.findById(room);
@@ -115,7 +157,18 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("disconnect", (reason) => {
-    console.log("Socket disconnected:", reason);
+    if (currentUserId) {
+      status[currentUserId] = new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        weekday: "long",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      }).format(new Date());
+      io.emit("status", status);
+    }
   });
 });
 

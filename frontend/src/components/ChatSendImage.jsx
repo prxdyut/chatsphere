@@ -34,7 +34,7 @@ export default function ChatSendImage({ button }) {
       formData.append("file", e.target.files[0]);
       setUploading(true);
       const res = await axios
-        .post("http://195.35.23.178:5000"+"/uploadfile", formData, {
+        .post("http://localhost:5000"+"/uploadfile", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .catch((error) => {

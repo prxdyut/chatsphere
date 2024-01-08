@@ -15,7 +15,7 @@ export default function RoomsProvider({ children }) {
   }, [userId]);
 
   return (
-    <RoomsContext.Provider value={{ rooms, setRooms }}>
+    <RoomsContext.Provider value={{ rooms, setRooms, reloadRooms }}>
       {children}
     </RoomsContext.Provider>
   );

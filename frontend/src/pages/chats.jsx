@@ -4,8 +4,11 @@ import Header from "../components/Header";
 import Layout from "../layout";
 import PeopleNew from "../components/PeopleNew";
 import ChatsNew from "../components/ChatsNew";
+import { useContext } from "react";
+import { ChatContext } from "../contexts/chat";
 
 export default function Chats() {
+
   return (
     <Layout>
       <div className="  col-span-2  h-screen overflow-auto px-4">

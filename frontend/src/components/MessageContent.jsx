@@ -23,9 +23,9 @@ export function MessageImage({ content, fileUrl }) {
           className=" rounded-lg cursor-pointer"
           src={fileUrl}
         />
-        <div className=" absolute bottom-0 right-0  p-2  hidden border-2 cursor-pointer rounded-full group-hover:rounded-none group-hover:rounded-tl-full   group-hover:block bg-gray-900 text-white pl-4 pt-4">
+        <a href={fileUrl} className=" absolute bottom-0 right-0  p-2  hidden border-2 cursor-pointer rounded-full group-hover:rounded-none group-hover:rounded-tl-full   group-hover:block bg-gray-900 text-white pl-4 pt-4">
           <LuDownload fontSize={20} />
-        </div>
+        </a>
       </div>
 
       <FsLightbox

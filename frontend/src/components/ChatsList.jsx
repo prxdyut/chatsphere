@@ -8,7 +8,7 @@ import getUsers from "../helper/getUsers";
 import { UsersContext } from "../contexts/users";
 
 export default function ChatsList({}) {
-  const {room } = useContext(ChatContext)
+  const {room, recents } = useContext(ChatContext)
   const { rooms } = useContext(RoomsContext);
   const { users: allUsers } = useContext(UsersContext);
   const { userId } = useAuth();
@@ -73,9 +73,10 @@ export default function ChatsList({}) {
       </div>
     );
   }
+
   const single = rooms.filter(({ users }) => users.length == 2);
   const multiple = rooms.filter(({ users }) => users.length > 2);
-
+console.log(recents)
   return (
     <div className=" overflow-y-auto">
       {single.map((chat, i) => (

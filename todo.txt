@@ -1,4 +1,3 @@
 add block contact functionality
-check un-authorized access
 
 turn on react strict mode after development in main.jsx

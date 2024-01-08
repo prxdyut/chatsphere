@@ -3,30 +3,66 @@ import Divider from "./Divider";
 import { checkInTheArrayIfTheFirstLetterMatches } from "../helper/checkInTheArrayIfTheFirstLetterMatches";
 import { PeopleContext } from "../contexts/people";
 import { RoomsContext } from "../contexts/rooms";
-import {useNavigate} from 'react-router-dom'
+import { Link, useNavigate } from "react-router-dom";
+import { ChatContext } from "../contexts/chat";
+import { useAuth } from "@clerk/clerk-react";
+import newRoom from "../helper/newRoom";
 export default function PeopleList({}) {
   const { people } = useContext(PeopleContext);
-  const { rooms } = useContext(RoomsContext);
-  const singleUserRooms = rooms.filter(({ users }) => users.length == 2);
+  const { rooms, setRooms } = useContext(RoomsContext);
+  const { recents } = useContext(ChatContext);
 
+  const singleUserRooms = rooms.filter(({ users }) => users.length == 2);
+  console.log(singleUserRooms);
   const Alphabets = Array.from({ length: 26 }, (_, index) =>
     String.fromCharCode("A".charCodeAt(0) + index)
   );
-const navigate = useNavigate()
+
   function Person({ id, name, image }) {
-    console.log(singleUserRooms.find(({ users }) => users.includes(id)));
+    const room_exsits = singleUserRooms.find(({ users }) => users.includes(id));
+    const { userId } = useAuth();
+    const navigate = useNavigate();
     return (
       <div className=" cursor-pointer block p-2 rounded  w-full hover:bg-gray-200">
-        <div className=" flex align-middle justify-center items-center">
-          <img
-            className=" aspect-square h-10 w-10 rounded-full  object-cover"
-            src={image}
-            alt=""
-          />
-          <div className=" pl-4 flex-grow gap-1 flex flex-col  justify-center">
-            <p className=" font-semibold flex-grow text-start">{name}</p>
+        {room_exsits ? (
+          <Link
+            to={"/room?roomId=" + room_exsits?._id}
+            className=" flex align-middle justify-center items-center"
+          >
+            <img
+              className=" aspect-square h-10 w-10 rounded-full  object-cover"
+              src={image}
+              alt=""
+            />
+            <div className=" pl-4 flex-grow gap-1 flex flex-col  justify-center">
+              <p className=" font-semibold flex-grow text-start">{name}</p>
+            </div>
+          </Link>
+        ) : (
+          <div
+            className=" flex align-middle justify-center items-center"
+            onClick={() => {
+              newRoom(
+                [id, userId],
+                "",
+                userId,
+                () => {},
+                (e) => navigate("/room?roomId=" + e._id),
+                rooms,
+                setRooms
+              );
+            }}
+          >
+            <img
+              className=" aspect-square h-10 w-10 rounded-full  object-cover"
+              src={image}
+              alt=""
+            />
+            <div className=" pl-4 flex-grow gap-1 flex flex-col  justify-center">
+              <p className=" font-semibold flex-grow text-start">{name}</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
@@ -39,7 +75,7 @@ const navigate = useNavigate()
             key={i}
             className={
               !checkInTheArrayIfTheFirstLetterMatches(people, "name", char)
-                .length > 0 && "hidden"
+                .length > 0 ? "hidden" : ''
             }
           >
             <Divider title={char} />

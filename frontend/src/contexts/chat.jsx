@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from "react";
-export const ChatContext = React.createContext();
 import io from "socket.io-client";
+import { useLocalStorage } from "@uidotdev/usehooks";
+import getFileType from "../helper/getFileType";
+import { useAuth, useUser } from "@clerk/clerk-react";
+export const ChatContext = React.createContext();
 
 export default function ChatProvider({ children }) {
-  const [id] = useState(Math.random());
+  const [id, setId] = useState(Math.random());
   const [room, setRoom] = useState(null);
   const [roomData, setRoomData] = useState(null);
   const [newMessage, setNewMessage] = useState(false);
   const [messages, setMessages] = useState([]);
-  const socket = io("http://195.35.23.178:5000");
+  const [recents, saveRecent] = useLocalStorage("drawing", {});
+  const { user } = useUser();
+
+  const socket = io("http://localhost:5000", { query: "foo=bar" });
+
   const uniqueMessages = [...new Set(messages.map(({ id }) => id))].map((id) =>
     messages.find((message) => message.id == id)
   );
@@ -17,16 +24,35 @@ export default function ChatProvider({ children }) {
   useEffect(() => {
     if (newMessage) setMessages([...messages, ...newMessage]);
   }, [newMessage]);
-  
+
   useEffect(() => {
     setMessages([]);
     if (room !== null) {
       socket.emit("join", { room });
       socket.on("joined", (data) => setRoomData(data));
     }
-    socket.on("recieve", (data) => setNewMessage(data));
+    socket.emit("active", { userId: user?.id });
+    socket.on("recieve", (data) => {
+      setNewMessage(data);
+
+      let content = "Sent a new message!";
+      if (data[data.length - 1].type == "text")
+        content = "Sent " + data[data.length - 1].content;
+      if (data[data.length - 1].type == "image") content = "Sent Image";
+      if (data[data.length - 1].type == "file")
+        content =
+          "Sent " + getFileType(data[data.length - 1].fileUrl) + " File";
+      saveRecent({
+        ...recents,
+        [room]: {
+          by: data[data.length - 1].userId,
+          message: content,
+        },
+      });
+    });
+    // socket.on("status", (data) => console.dir(data));
     socket.on("disconnect", () => console.log("server disconnected"));
-  }, [room]);
+  }, [room, id, user]);
 
   const sendMessage = (data) => {
     const messageData = {
@@ -39,7 +65,7 @@ export default function ChatProvider({ children }) {
     setNewMessage([messageData]);
   };
   const multipleUsers = !(roomData?.users?.length == 2);
-
+  const loadRoom = () => setId(Math.random());
   return (
     <ChatContext.Provider
       value={{
@@ -49,6 +75,8 @@ export default function ChatProvider({ children }) {
         messages: roomMessages,
         roomData,
         multipleUsers,
+        loadRoom,
+        recents,
       }}
     >
       {children}

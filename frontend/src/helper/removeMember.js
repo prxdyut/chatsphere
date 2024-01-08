@@ -1,30 +1,26 @@
-export default function newRoom(users, name, by, onError, onSuccess, rooms, setRooms) {
-
+export default function removeMember(users, room, onError, onSuccess, update) {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify({
-    users,
-    name,
-    by,
-    created: new Date()
+    users, room
   });
 
   var requestOptions = {
-    method: "POST",
+    method: "DELETE",
     headers: myHeaders,
     body: raw,
     redirect: "follow",
   };
-
+console.log('yo')
   fetch("http://localhost:5000" + "/room", requestOptions)
     .then((response) => response.json())
     .then((e) => {
       if (e.error) {
         onError(e.error);
       } else {
-        setRooms([...rooms, e])
-        onSuccess(e)
+        onSuccess(`Added ${e.modifiedCount} Member`);
+        update()
       }
     })
     .catch((error) => onError(JSON.stringify(error)));
