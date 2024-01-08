@@ -11,7 +11,7 @@ import Room from '../pages/room'
 export const routes = [
   {
     path: "/",
-    element: <App />,
+    element: <Chats />,
     errorElement: <ErrorPage />,
   },
   {
