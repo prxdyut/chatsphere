@@ -35,7 +35,7 @@ export default function ChatSendFile({ button }) {
       formData.append("file", e.target.files[0]);
       setUploading(true);
       const res = await axios
-        .post("https://api.chatsphere.pradyutdas.online"+"/uploadfile", formData, {
+        .post("http://localhost:5000"+"/uploadfile", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .catch((error) => {

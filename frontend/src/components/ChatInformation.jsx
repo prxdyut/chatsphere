@@ -8,11 +8,12 @@ import { RWebShare } from "react-web-share";
 import { useContext } from "react";
 import { UsersContext } from "../contexts/users";
 import { ChatContext } from "../contexts/chat";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import ChatsAddToRoom from "./ChatsAddToRoom";
 import ChatsRemoveFromRoom from "./ChatsRemoveFromRoom";
 export default function ChatInformation({ open, toggle }) {
   const { userId } = useAuth();
+  const {user} = useUser()
   const { multipleUsers, roomData } = useContext(ChatContext);
   const { findUser } = useContext(UsersContext);
   const roomUsers = roomData?.users
@@ -87,7 +88,7 @@ export default function ChatInformation({ open, toggle }) {
           <RWebShare
             data={{
               text: "@pradyut",
-              url: `${window?.origin}/people?add=user`,
+              url: `${window?.origin}/people?add=${user.username}`,
               title: "Pradyut Das",
             }}
           >

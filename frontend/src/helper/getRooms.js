@@ -1,6 +1,6 @@
 export default async function getRooms(userId, setRooms) {
   let { data } = await fetch(
-    "https://api.chatsphere.pradyutdas.online" + "/rooms?userId=" + userId
+    "http://localhost:5000" + "/rooms?userId=" + userId
   ).then((res) => res.json());
   setRooms([...data]);
 }

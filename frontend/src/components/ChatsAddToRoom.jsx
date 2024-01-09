@@ -95,7 +95,7 @@ export default function ChatsAddToRoom() {
           open ? "flex" : "hidden"
         }`}
       >
-        <div className=" bg-white p-4 flex gap-4 flex-col rounded  max-lg:w-1/2 w-1/4">
+        <div className=" bg-white p-4 flex gap-4 flex-col rounded  max-lg:w-5/6 w-1/2">
           <div className=" flex justify-between  items-center">
             <p className=" text-xl font-bold">New Member</p>
             <button

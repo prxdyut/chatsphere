@@ -4,6 +4,7 @@ const clerkClient = pkg;
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
+const axios = require("axios");
 const app = express();
 const server = http.createServer(app);
 const io = require("./socketio")(server);
@@ -154,19 +155,39 @@ io.on("connection", async (socket) => {
     socket.to(data.room).emit("recieve", [data]);
     const res = new message(data);
     res.save();
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://api.webpushr.com/v1/notification/send/attribute",
+      headers: {
+        webpushrKey: "d39fb9fd47bfe51333022c9c710c9429",
+        webpushrAuthToken: "81025",
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify({
+        title: "notification_title",
+        message: "notification message",
+        target_url: "https://www.webpushr.com",
+        attribute: {
+          userId: "user_2afgNB8meoMulzLWM8oyUCe92zQ",
+        },
+      }),
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   });
 
   socket.on("disconnect", (reason) => {
     if (currentUserId) {
-      status[currentUserId] = new Intl.DateTimeFormat("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        weekday: "long",
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      }).format(new Date());
+      status[currentUserId] = new Date();
       io.emit("status", status);
     }
   });

@@ -6,21 +6,26 @@ import { RoomsContext } from "../contexts/rooms";
 import { useAuth } from "@clerk/clerk-react";
 import getUsers from "../helper/getUsers";
 import { UsersContext } from "../contexts/users";
+import { PeopleContext } from "../contexts/people";
 
 export default function ChatsList({}) {
-  const {room, recents } = useContext(ChatContext)
+  const { room, recents } = useContext(ChatContext);
   const { rooms } = useContext(RoomsContext);
-  const { users: allUsers } = useContext(UsersContext);
+  const { users: allUsers, findUser } = useContext(UsersContext);
   const { userId } = useAuth();
-
-  function ChatSingle({ users, _id : id }) {
+  
+  function ChatSingle({ users, _id: id }) {
     const [currentUsers, setCurrentUsers] = useState([]);
     useEffect(() => {
       getUsers(users, userId, setCurrentUsers, allUsers);
     }, []);
 
     return (
-      <div className={`" cursor-pointer block p-4 rounded  w-full hover:bg-gray-100 ${room == id && 'bg-gray-200'}  "`}>
+      <div
+        className={`" cursor-pointer block p-4 rounded  w-full hover:bg-gray-100 ${
+          room == id && "bg-gray-200"
+        }  "`}
+      >
         <div className=" flex align-middle">
           <img
             className=" aspect-square h-10 w-10 rounded-full  object-cover"
@@ -34,7 +39,19 @@ export default function ChatsList({}) {
               </p>
               <p className=" text-xs opacity-75">11: 111 PM</p>
             </div>
-            <p className="  text-sm text-start">Recent Message</p>
+
+            {recents[id]?.by && (
+              <p className="  text-sm text-start">
+                <b>{userId == recents[id]?.by ? (
+                  "You : "
+                ) : (
+                  `${findUser(recents[id]?.by)?.firstName || ""} ${
+                    findUser(recents[id]?.by)?.lastName || ""
+                  } : `
+                )}</b>
+                {recents[id]?.message || ""}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -48,12 +65,16 @@ export default function ChatsList({}) {
     }, []);
 
     return (
-      <div className={`" cursor-pointer rounded block p-4  w-full hover:bg-gray-100 ${room == id && 'bg-gray-200'}  "`}>
+      <div
+        className={`" cursor-pointer rounded block p-4  w-full hover:bg-gray-100 ${
+          room == id && "bg-gray-200"
+        }  "`}
+      >
         <div className="flex flex-col align-middle gap-2">
           <div className="flex -space-x-2 overflow-hidden">
             {currentUsers.map(({ imageUrl }, i) => (
               <img
-              key={i}
+                key={i}
                 className=" aspect-square h-10 w-10 rounded-full  object-cover"
                 src={imageUrl}
                 alt=""
@@ -65,9 +86,19 @@ export default function ChatsList({}) {
               <p className=" font-semibold flex-grow text-start">
                 {name || "Untitled"}
               </p>
-              <p className=" text-xs opacity-75">11: 111 PM</p>
             </div>
-            <p className="  text-sm text-start">Recent Message</p>
+            {recents[id]?.by && (
+              <p className="  text-sm text-start">
+                <b>{userId == recents[id]?.by ? (
+                  "You : "
+                ) : (
+                  `${findUser(recents[id]?.by)?.firstName || ""} ${
+                    findUser(recents[id]?.by)?.lastName || ""
+                  } : `
+                )}</b>
+                {recents[id]?.message || ""}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -76,7 +107,7 @@ export default function ChatsList({}) {
 
   const single = rooms.filter(({ users }) => users.length == 2);
   const multiple = rooms.filter(({ users }) => users.length > 2);
-console.log(recents)
+
   return (
     <div className=" overflow-y-auto">
       {single.map((chat, i) => (

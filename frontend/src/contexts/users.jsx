@@ -4,7 +4,7 @@ export const UsersContext = React.createContext();
 export default function UsersProvider({ children }) {
   const [users, setUsers] = useState([]);
   const loadUsers = () =>
-    fetch("https://api.chatsphere.pradyutdas.online" + "/users")
+    fetch("http://localhost:5000" + "/users")
       .then((res) => res.json())
       .then(({ data }) => setUsers(data));
 

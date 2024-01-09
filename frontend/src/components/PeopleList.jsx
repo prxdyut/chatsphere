@@ -10,10 +10,10 @@ import newRoom from "../helper/newRoom";
 export default function PeopleList({}) {
   const { people } = useContext(PeopleContext);
   const { rooms, setRooms } = useContext(RoomsContext);
-  const { recents } = useContext(ChatContext);
+  const { status } = useContext(ChatContext);
 
   const singleUserRooms = rooms.filter(({ users }) => users.length == 2);
-  console.log(singleUserRooms);
+
   const Alphabets = Array.from({ length: 26 }, (_, index) =>
     String.fromCharCode("A".charCodeAt(0) + index)
   );
@@ -36,6 +36,24 @@ export default function PeopleList({}) {
             />
             <div className=" pl-4 flex-grow gap-1 flex flex-col  justify-center">
               <p className=" font-semibold flex-grow text-start">{name}</p>
+              <p className=" font-semibold text-xs flex-grow text-start">
+              {status[id] == "online" && 'Online'}
+                {status[id] && status[id] != "online" && (
+                  <p className=" text-sm
+                  ">
+                    Last Seen {
+                      Intl.DateTimeFormat("en-US", {
+                    
+                        month: "short",
+                        day: "numeric",
+                        weekday: "short",
+                        hour: "numeric",
+                        minute: "numeric",
+                        hour12: true,
+                      }).format(new Date(status[id]))}
+                  </p>
+                )}
+              </p>
             </div>
           </Link>
         ) : (
@@ -60,6 +78,9 @@ export default function PeopleList({}) {
             />
             <div className=" pl-4 flex-grow gap-1 flex flex-col  justify-center">
               <p className=" font-semibold flex-grow text-start">{name}</p>
+              <p className=" font-semibold text-xs flex-grow text-start">
+                {name}
+              </p>
             </div>
           </div>
         )}
@@ -75,7 +96,9 @@ export default function PeopleList({}) {
             key={i}
             className={
               !checkInTheArrayIfTheFirstLetterMatches(people, "name", char)
-                .length > 0 ? "hidden" : ''
+                .length > 0
+                ? "hidden"
+                : ""
             }
           >
             <Divider title={char} />

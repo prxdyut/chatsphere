@@ -2,21 +2,24 @@ import FsLightbox from "fslightbox-react";
 import React, { useContext, useEffect, useState } from "react";
 import { BsShare, BsXLg } from "react-icons/bs";
 import { ChatContext } from "../contexts/chat";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 export default function SharedMedia({ button, withPreview }) {
-  const [toggler, setToggler] = useState(false);
   const [source, setSource] = useState(false);
   const [id] = useState(parseInt(Math.random() * 100));
   const { messages } = useContext(ChatContext);
   const imageMessages = messages.filter((message) => message.type == "image");
-
+const navigate = useNavigate()
+const [param] = useSearchParams()
+const loc = useLocation()
   function Image({ url }) {
     return (
       <img
-        onClick={() => {
-          setSource(url);
-          setToggler(Math.random());
-        }}
+      onClick={() =>
+        navigate(
+          loc.pathname + "?" + param.toString() + "&image=" + url
+        )
+      }
         className=" aspect-square rounded object-cover"
         src={url}
       />
@@ -91,7 +94,6 @@ export default function SharedMedia({ button, withPreview }) {
           </div>
         </div>
       </div>
-      <FsLightbox toggler={toggler} sources={[source]} />
     </div>
   );
 }

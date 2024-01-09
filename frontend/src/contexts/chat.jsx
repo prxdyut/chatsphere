@@ -14,7 +14,9 @@ export default function ChatProvider({ children }) {
   const [recents, saveRecent] = useLocalStorage("drawing", {});
   const { user } = useUser();
 
-  const socket = io("https://api.chatsphere.pradyutdas.online", { query: "foo=bar" });
+  const [activeStatus, setActiveStatus] = useState({})
+
+  const socket = io("http://localhost:5000", { query: "foo=bar" });
 
   const uniqueMessages = [...new Set(messages.map(({ id }) => id))].map((id) =>
     messages.find((message) => message.id == id)
@@ -50,7 +52,7 @@ export default function ChatProvider({ children }) {
         },
       });
     });
-    // socket.on("status", (data) => console.dir(data));
+    socket.on("status", (data) => setActiveStatus((_) => ({..._, ...data})));
     socket.on("disconnect", () => console.log("server disconnected"));
   }, [room, id, user]);
 
@@ -66,6 +68,7 @@ export default function ChatProvider({ children }) {
   };
   const multipleUsers = !(roomData?.users?.length == 2);
   const loadRoom = () => setId(Math.random());
+
   return (
     <ChatContext.Provider
       value={{
@@ -77,6 +80,7 @@ export default function ChatProvider({ children }) {
         multipleUsers,
         loadRoom,
         recents,
+        status: activeStatus
       }}
     >
       {children}

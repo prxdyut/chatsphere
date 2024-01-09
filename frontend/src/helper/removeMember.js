@@ -12,8 +12,8 @@ export default function removeMember(users, room, onError, onSuccess, update) {
     body: raw,
     redirect: "follow",
   };
-console.log('yo')
-  fetch("https://api.chatsphere.pradyutdas.online" + "/room", requestOptions)
+  
+  fetch("http://localhost:5000" + "/room", requestOptions)
     .then((response) => response.json())
     .then((e) => {
       if (e.error) {

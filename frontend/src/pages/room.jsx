@@ -3,6 +3,8 @@ import ChatContainer from "../components/ChatContainer";
 import Chats from "./chats";
 import { useContext, useEffect } from "react";
 import { ChatContext } from "../contexts/chat";
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import Signin from "./signin";
 
 export default function Room() {
   const { setRoom } = useContext(ChatContext);
@@ -15,12 +17,17 @@ export default function Room() {
 
   return (
     <div>
-      <div className=" lg:hidden">
-        <ChatContainer />
-      </div>
-      <div className=" max-lg:hidden">
-        <Chats />
-      </div>
+      <SignedOut>
+        <Signin />
+      </SignedOut>
+      <SignedIn>
+        <div className=" lg:hidden">
+          <ChatContainer />
+        </div>
+        <div className=" max-lg:hidden">
+          <Chats />
+        </div>
+      </SignedIn>
     </div>
   );
 }

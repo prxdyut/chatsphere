@@ -9,14 +9,14 @@ import { RWebShare } from "react-web-share";
 import { RiErrorWarningLine } from "react-icons/ri";
 import addToContact from "../helper/addToContact";
 import { IoCheckmarkDone } from "react-icons/io5";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { PeopleContext } from "../contexts/people";
 import { UsersContext } from "../contexts/users";
 
 export default function PeopleNew() {
   const { userId } = useAuth();
-const {users} = useContext(UsersContext)
+  const { users } = useContext(UsersContext);
   let [searchParams, setSearchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
   const toggleOpen = () => setOpen(!open);
@@ -24,7 +24,7 @@ const {users} = useContext(UsersContext)
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const { reloadPeople } = useContext(PeopleContext);
-
+  const { user } = useUser();
   const add = () => {
     setOpen(true);
     setInput(searchParams.get("add"));
@@ -33,7 +33,8 @@ const {users} = useContext(UsersContext)
       userId,
       setError,
       setSuccess,
-      reloadPeople, users
+      reloadPeople,
+      users
     );
   };
 
@@ -69,9 +70,10 @@ const {users} = useContext(UsersContext)
           <RWebShare
             data={{
               text: "@pradyut",
-              url: `${window?.origin}/people?add=user`,
+              url: `${window?.origin}/people?add=${user.username}`,
               title: "Pradyut Das",
-            }}  >
+            }}
+          >
             <div className=" relative group">
               <input
                 value={`${window?.origin}/people?add=pradyut`}
@@ -92,7 +94,7 @@ const {users} = useContext(UsersContext)
             <input
               placeholder="Username or Email"
               className="px-3 py-2 bg-gray-200 rounded mb-1 w-full"
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => setInput(e.target.value.toLowerCase())}
               value={input}
               onKeyUp={(e) => {
                 if (e.key == "Enter")
@@ -101,7 +103,8 @@ const {users} = useContext(UsersContext)
                     userId,
                     setError,
                     setSuccess,
-                    reloadPeople, users
+                    reloadPeople,
+                    users
                   );
               }}
             ></input>
@@ -124,7 +127,8 @@ const {users} = useContext(UsersContext)
                   userId,
                   setError,
                   setSuccess,
-                  reloadPeople, users
+                  reloadPeople,
+                  users
                 )
               }
               className="flex gap-2 uppercase text-xs font-semibold bg-gray-700 hover:bg-gray-900 text-white px-4 py-2 rounded w-max"

@@ -16,7 +16,7 @@ export default function ChatHeader({ onClick }) {
   const [open, setOpen] = useState();
   const toggleOpen = () => setOpen(!open);
   const { userId } = useAuth();
-  const { multipleUsers, roomData } = useContext(ChatContext);
+  const { multipleUsers, roomData, status } = useContext(ChatContext);
   const { findUser } = useContext(UsersContext);
   const roomUsers = roomData?.users
     ?.filter((id) => id != userId)
@@ -37,22 +37,45 @@ export default function ChatHeader({ onClick }) {
             <IoIosArrowBack fontSize={24} />
           </button>
           <div className=" p-1">
-          {roomUsers
-            ?.map((user) => user?.imageUrl)
-            .map((url, i) => (
-              <img
-              key={i}
-                className="inline-block  h-10 w-10 rounded-full  object-cover"
-                src={url}
-                alt=""
-              />
-            ))}</div>
+            {roomUsers
+              ?.map((user) => user?.imageUrl)
+              .map((url, i) => (
+                <img
+                  key={i}
+                  className="inline-block  h-10 w-10 rounded-full  object-cover"
+                  src={url}
+                  alt=""
+                />
+              ))}
+          </div>
         </div>
         <div className=" flex  flex-grow  items-center relative">
           {multipleUsers ? (
-            <div className=" flex flex-col flex-grow" onClick={onClick}>
-              <p className=" font-semibold flex-grow text-start">{roomData?.name}</p>
-              <p className="  text-sm text-start">Last Seen Today 12:30PM</p>
+            <div
+              className=" flex flex-col flex-grow max-lg:ml-10"
+              onClick={onClick}
+            >
+              <p className=" font-semibold flex-grow text-start">
+                {roomData?.name}
+              </p>
+              <p className="  text-sm text-start">
+                {roomData.users
+                  .map(
+                    (user) =>
+                      status[user] == "online" &&
+                      user != userId &&
+                      findUser(user)?.firstName
+                  )
+                  .filter((_) => _)
+                  .join(" ")}
+                {roomData.users
+                  .map((user) => status[user] == "online" && user != userId)
+                  .filter((_) => _).length == 1 && "  is"}
+                {roomData.users
+                  .map((user) => status[user] == "online" && user != userId)
+                  .filter((_) => _).length > 1 && "  are"}{" "}
+                Online
+              </p>
             </div>
           ) : (
             <div className=" pl-4 flex flex-col flex-grow" onClick={onClick}>
@@ -61,7 +84,23 @@ export default function ChatHeader({ onClick }) {
                   ?.map((user) => user?.firstName + " " + user?.lastName)
                   .join(", ")}
               </p>
-              <p className="  text-sm text-start">Last Seen Today 12:30PM</p>
+              {roomUsers?.map((user) =>
+                user != userId && status[user?.id] == "online"
+                  ? "Online"
+                  : status[user?.id] && (
+                      <p className=" text-xs">
+                        Last Seen &nbsp;
+                        {Intl.DateTimeFormat("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          weekday: "short",
+                          hour: "numeric",
+                          minute: "numeric",
+                          hour12: true,
+                        }).format(new Date(status[user?.id]))}
+                      </p>
+                    )
+              )}
             </div>
           )}
           <button
@@ -79,7 +118,7 @@ export default function ChatHeader({ onClick }) {
               onClick={onClick}
               className=" flex gap-2 items-center  hover:bg-gray-200 px-4 py-2 border  rounded-lg"
             >
-              <MdInfoOutline fontSize={20} /> Personal Information{" "}
+              <MdInfoOutline fontSize={20} /> More Information{" "}
             </button>
             <SharedMedia
               button={
