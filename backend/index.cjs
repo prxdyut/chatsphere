@@ -14,6 +14,7 @@ const { S3Client } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 require("./firebase.cjs");
+const { getMessaging } = require("firebase-admin/messaging");
 
 app.use(express.json());
 app.use(cors());
@@ -48,6 +49,19 @@ app.post("/room", async (req, res) => {
       RESULT.save();
       res.json(RESULT).status(204);
     } else res.status(500).json({ error: "Please Add Users" });
+  } catch (error) {
+    console.error("Error handling route:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post("/set-notification-token", async (req, res) => {
+  const { userId, token } = await req.body;
+  try {
+    await clerkClient.users.updateUserMetadata(userId, {
+      privateMetadata: { externalId: token },
+    });
+    await getMessaging().subscribeToTopic([token], userId);
   } catch (error) {
     console.error("Error handling route:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -158,40 +172,45 @@ io.on("connection", async (socket) => {
     res.save();
 
     const roomData = await chatroom.findById(data.room);
-
+    const multiple = roomData.users.length > 2;
     const SEND_NOTIFICATION_TO = roomData.users.filter(
       (id) => id != data.userId
     );
-    SEND_NOTIFICATION_TO.map(async (userId) => {
-      const userData = await clerkClient.users.getUser(userId);
-      let config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: "https://api.webpushr.com/v1/notification/send/attribute",
-        headers: {
-          webpushrKey: "d39fb9fd47bfe51333022c9c710c9429",
-          webpushrAuthToken: "81025",
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify({
-          title: `${userData.firstName} ${userData.lastName}`,
-          message: "notification message",
-          target_url: "https://www.webpushr.com",
-          attribute: {
-            userId,
-          },
-        }),
-      };
+    const sender = await clerkClient.users.getUser(data.userId);
+    const condition = SEND_NOTIFICATION_TO.map(
+      (txt) => `('${txt}' in topics)`
+    ).join(" || ");
 
-      axios
-        .request(config)
-        .then((response) => {
-          console.log(JSON.stringify(response.data));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
+    const notification = {
+      webpush: {
+        notification: {
+          name: "Pradyut",
+          title: multiple
+            ? `${roomData.name} - ${sender.firstName} ${sender.lastName}`
+            : `${sender.firstName} ${sender.lastName}`,
+          body: `${data.content} `,
+          badge: "https://chatsphere-theta.vercel.app/logo/main.svg",
+          icon: `${sender.imageUrl}`,
+          image: data.type == "image" && `${data.fileUrl}`,
+          tag: `${roomData._id}`,
+          renotify: true,
+          sound: "default",
+          actions: [
+            {
+              action: "reply",
+              type: "text",
+              title: "Reply",
+              icon: "/images/demos/action-5-128x128.png",
+            },
+          ],
+        },
+      },
+      condition,
+    };
+
+    getMessaging()
+      .send(notification)
+      .catch((err) => console.log(err));
   });
 
   socket.on("disconnect", (reason) => {

@@ -1,4 +1,4 @@
-import { SignInButton, SignUp, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { SignInButton, SignUp, SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-react";
 import ChatContainer from "./components/ChatContainer";
 import NavigationBar from "./components/NavigationBar";
 import { Link, useLocation } from "react-router-dom";
@@ -6,10 +6,11 @@ import Signin from "./pages/signin";
 import ImagePreview from "./components/ImagePreview";
 import Notification from "./components/Notifications";
 import { onMessageListener, requestForToken } from "./utils/firebase";
-import { getMessaging } from "firebase/messaging";
 
 export default function Layout({ children }) {
-  requestForToken();
+  const {userId} = useAuth()
+
+  requestForToken(userId);
   
   onMessageListener()
     .then((payload) => {

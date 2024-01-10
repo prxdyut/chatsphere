@@ -20,7 +20,7 @@ export function Recieved({ content, created, sent, userId, showInfo }) {
       <div className="px-4 flex flex-col pr-6 py-2 gap-2 bg-white w-max rounded-2xl rounded-tl-none">
         {multipleUsers && showInfo && (
           <p className=" text-xs font-bold opacity-75">
-            {user.firstName + " " + user.lastName}
+            {user?.firstName + " " + user?.lastName}
           </p>
         )}
         {content}
