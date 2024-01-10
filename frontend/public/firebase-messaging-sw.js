@@ -14,8 +14,3 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const messaging = firebase.messaging();
-
-self.addEventListener('push', function(event) {
-  console.log(event)
-  event.preventDefault()
-});

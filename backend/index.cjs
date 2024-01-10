@@ -195,14 +195,9 @@ io.on("connection", async (socket) => {
           tag: `${roomData._id}`,
           renotify: true,
           sound: "default",
-          actions: [
-            {
-              action: "reply",
-              type: "text",
-              title: "Reply",
-              icon: "/images/demos/action-5-128x128.png",
-            },
-          ],
+        },
+        fcm_options: {
+          link: `http://localhost:5173/room?roomId=${roomData._id}`,
         },
       },
       condition,
