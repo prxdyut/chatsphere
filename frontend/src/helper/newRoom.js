@@ -17,7 +17,9 @@ export default function newRoom(users, name, by, onError, onSuccess, rooms, setR
     redirect: "follow",
   };
 
-  fetch("http://localhost:5000" + "/room", requestOptions)
+  fetch((location.hostname == "localhost"
+    ? "http://localhost:5000"
+    : "https://api.chatsphere.pradyutdas.online" ) + "/room", requestOptions)
     .then((response) => response.json())
     .then((e) => {
       if (e.error) {

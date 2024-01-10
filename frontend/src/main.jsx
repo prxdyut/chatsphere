@@ -7,16 +7,16 @@ import ContextProvider from "./utils/contexts.jsx";
 
 const router = createBrowserRouter(routes);
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key")
+  throw new Error("Missing Publishable Key");
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  // <React.StrictMode>
+  <React.StrictMode>
     <ContextProvider>
       <RouterProvider router={router} />
     </ContextProvider>
-  // </React.StrictMode>
+  </React.StrictMode>
 );

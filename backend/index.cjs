@@ -13,6 +13,7 @@ const PORT = process.env.PORT;
 const { S3Client } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
+require("./firebase.cjs");
 
 app.use(express.json());
 app.use(cors());
@@ -156,33 +157,41 @@ io.on("connection", async (socket) => {
     const res = new message(data);
     res.save();
 
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: "https://api.webpushr.com/v1/notification/send/attribute",
-      headers: {
-        webpushrKey: "d39fb9fd47bfe51333022c9c710c9429",
-        webpushrAuthToken: "81025",
-        "Content-Type": "application/json",
-      },
-      data: JSON.stringify({
-        title: "notification_title",
-        message: "notification message",
-        target_url: "https://www.webpushr.com",
-        attribute: {
-          userId: "user_2afgNB8meoMulzLWM8oyUCe92zQ",
-        },
-      }),
-    };
+    const roomData = await chatroom.findById(data.room);
 
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const SEND_NOTIFICATION_TO = roomData.users.filter(
+      (id) => id != data.userId
+    );
+    SEND_NOTIFICATION_TO.map(async (userId) => {
+      const userData = await clerkClient.users.getUser(userId);
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "https://api.webpushr.com/v1/notification/send/attribute",
+        headers: {
+          webpushrKey: "d39fb9fd47bfe51333022c9c710c9429",
+          webpushrAuthToken: "81025",
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify({
+          title: `${userData.firstName} ${userData.lastName}`,
+          message: "notification message",
+          target_url: "https://www.webpushr.com",
+          attribute: {
+            userId,
+          },
+        }),
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
   });
 
   socket.on("disconnect", (reason) => {

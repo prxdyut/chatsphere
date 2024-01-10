@@ -16,7 +16,9 @@ export default function ChatProvider({ children }) {
 
   const [activeStatus, setActiveStatus] = useState({})
 
-  const socket = io("http://localhost:5000", { query: "foo=bar" });
+  const socket = io((location.hostname == "localhost"
+    ? "http://localhost:5000"
+    : "https://api.chatsphere.pradyutdas.online" ), { query: "foo=bar" });
 
   const uniqueMessages = [...new Set(messages.map(({ id }) => id))].map((id) =>
     messages.find((message) => message.id == id)

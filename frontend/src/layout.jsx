@@ -4,19 +4,19 @@ import NavigationBar from "./components/NavigationBar";
 import { Link, useLocation } from "react-router-dom";
 import Signin from "./pages/signin";
 import ImagePreview from "./components/ImagePreview";
-import { useEffect } from "react";
+import Notification from "./components/Notifications";
+import { onMessageListener, requestForToken } from "./utils/firebase";
+import { getMessaging } from "firebase/messaging";
 
 export default function Layout({ children }) {
-  useEffect(() => {
-    const webpushrScript = document.createElement("script");
-    webpushrScript.src = "/js/app.js";
-    document.querySelector("body").appendChild(webpushrScript);
-    const webpushrSubscribe = document.createElement("div");
-    webpushrSubscribe.id = "webpushr-subscription-button";
-    webpushrSubscribe.className = 'hidden'
-    document.querySelector("body").appendChild(webpushrSubscribe);
-  }, []);
-
+  requestForToken();
+  
+  onMessageListener()
+    .then((payload) => {
+      alert(JSON.stringify(payload));
+      console.log(payload);
+    })
+    .catch((err) => console.log("failed: ", err));
   return (
     <main className=" flex ">
       <SignedOut>

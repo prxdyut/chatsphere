@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json.schemastore.org/web-manifest",
+  "short_name": "12CharShortName",
+  "name": "Name",
+  "description": "description",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "https://www.iconarchive.com/download/i67982/marcus-roberto/google-play/Google-Drive.96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "https://www.iconarchive.com/download/i67982/marcus-roberto/google-play/Google-Drive.256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "https://www.iconarchive.com/download/i67982/marcus-roberto/google-play/Google-Drive.512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "background_color": "#EEE",
+  "theme_color": "#1565c0",
+  "start_url": "./?utm_source=web_app_manifest",
+  "display": "standalone",
+  "orientation": "any"
+}
