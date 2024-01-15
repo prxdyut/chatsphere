@@ -11,7 +11,7 @@ export default function ChatProvider({ children }) {
   const [roomData, setRoomData] = useState(null);
   const [newMessage, setNewMessage] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [recents, saveRecent] = useLocalStorage("drawing", {});
+  const [recents, saveRecent] = useLocalStorage("recents", {});
   const { user } = useUser();
 
   const [activeStatus, setActiveStatus] = useState({})
