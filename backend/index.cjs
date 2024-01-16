@@ -168,6 +168,7 @@ io.on("connection", async (socket) => {
 
   socket.on("send", async (data) => {
     socket.to(data.room).emit("recieve", [data]);
+
     const res = new message(data);
     res.save();
 

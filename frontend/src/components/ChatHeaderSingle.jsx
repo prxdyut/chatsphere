@@ -7,7 +7,7 @@ import SharedMedia from "./ChatSharedMedia";
 import { FaRegImage } from "react-icons/fa6";
 import SharedFiles from "./ChatSharedFiles";
 import { GoPaperclip } from "react-icons/go";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { ChatContext } from "../contexts/chat";
 import { UsersContext } from "../contexts/users";
 import { useAuth } from "@clerk/clerk-react";
@@ -84,8 +84,8 @@ export default function ChatHeader({ onClick }) {
                   ?.map((user) => user?.firstName + " " + user?.lastName)
                   .join(", ")}
               </p>
-              {roomUsers?.map((user) =>
-                user != userId && status[user?.id] == "online"
+              {roomUsers?.map((user, index_) =><React.Fragment key={index_}>
+                {user != userId && status[user?.id] == "online"
                   ? "Online"
                   : status[user?.id] && (
                       <p className=" text-xs">
@@ -99,7 +99,7 @@ export default function ChatHeader({ onClick }) {
                           hour12: true,
                         }).format(new Date(status[user?.id]))}
                       </p>
-                    )
+                    )}</React.Fragment>
               )}
             </div>
           )}

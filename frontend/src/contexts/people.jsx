@@ -7,6 +7,7 @@ export default function PeopleProvider({ children }) {
   const { users } = useContext(UsersContext);
   const [people, setPeople] = useState([]);
   const reloadPeople = () => getPeople(setPeople, users);
+  
   useEffect(() => {
     reloadPeople();
   }, [users]);

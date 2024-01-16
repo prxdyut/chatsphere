@@ -3,61 +3,64 @@ import io from "socket.io-client";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import getFileType from "../helper/getFileType";
 import { useAuth, useUser } from "@clerk/clerk-react";
+import { apiUrl } from "../helper/apiUrl";
+
 export const ChatContext = React.createContext();
 
 export default function ChatProvider({ children }) {
-  const [id, setId] = useState(Math.random());
+  const { getToken, sessionId } = useAuth();
+  const { user } = useUser();
   const [room, setRoom] = useState(null);
   const [roomData, setRoomData] = useState(null);
-  const [newMessage, setNewMessage] = useState(false);
   const [messages, setMessages] = useState([]);
   const [recents, saveRecent] = useLocalStorage("recents", {});
-  const { user } = useUser();
+  const [status, setstatus] = useState({});
 
-  const [activeStatus, setActiveStatus] = useState({})
+  const socket = io(apiUrl, {
+    auth: async (cb) => cb({ token: await getToken(), sessionId }),
+  });
+  socket.au;
+  const multipleUsers = !(roomData?.users?.length == 2);
+  const roomMessages = messages.filter((message) => room == message.room);
 
-  const socket = io((location.hostname == "localhost"
-    ? "http://localhost:5000"
-    : "https://api.chatsphere.pradyutdas.online" ), { query: "foo=bar" });
+  const newMessages = (data) =>
+    setMessages((prev) => {
+      const messages = [...prev, ...data];
+      return [...new Set(messages.map(({ id }) => id))].map((id) =>
+        messages.find((message) => message.id == id)
+      );
+    });
 
-  const uniqueMessages = [...new Set(messages.map(({ id }) => id))].map((id) =>
-    messages.find((message) => message.id == id)
-  );
-  const roomMessages = uniqueMessages.filter((message) => room == message.room);
-
-  useEffect(() => {
-    if (newMessage) setMessages([...messages, ...newMessage]);
-  }, [newMessage]);
-
-  useEffect(() => {
-    setMessages([]);
-    if (room !== null) {
-      socket.emit("join", { room });
-      socket.on("joined", (data) => setRoomData(data));
-    }
-    socket.emit("active", { userId: user?.id });
-    socket.on("recieve", (data) => {
-      setNewMessage(data);
-
-      let content = "Sent a new message!";
-      if (data[data.length - 1].type == "text")
+  const onMessageRecieve = (data) => {
+    console.log("triggered", data);
+    newMessages(data);
+    let content = "Sent a new message!";
+    switch (data[data.length - 1].type) {
+      case "text":
         content = "Sent " + data[data.length - 1].content;
-      if (data[data.length - 1].type == "image") content = "Sent Image";
-      if (data[data.length - 1].type == "file")
+        break;
+      case "image":
+        content = "Sent Image";
+        break;
+      case "file":
+        content = "Sent " + data[data.length - 1].content;
+        break;
+      case "file":
         content =
           "Sent " + getFileType(data[data.length - 1].fileUrl) + " File";
-      saveRecent({
-        ...recents,
-        [room]: {
-          by: data[data.length - 1].userId,
-          message: content,
-        },
-      });
-    });
-    socket.on("status", (data) => setActiveStatus((_) => ({..._, ...data})));
-    socket.on("disconnect", () => console.log("server disconnected"));
-  }, [room, id, user]);
+        break;
+    }
 
+    saveRecent((prev) => ({
+      ...prev,
+      [room]: {
+        by: data[data.length - 1].userId,
+        message: content,
+      },
+    }));
+  };
+
+  const onStatusChange = (data) => setstatus((prev) => ({ ...prev, ...data }));
   const sendMessage = (data) => {
     const messageData = {
       ...data,
@@ -66,23 +69,29 @@ export default function ChatProvider({ children }) {
       id: `${new Date().getTime()}`,
     };
     socket.emit("send", messageData);
-    setNewMessage([messageData]);
   };
-  const multipleUsers = !(roomData?.users?.length == 2);
-  const loadRoom = () => setId(Math.random());
+
+  const loadRoom = () => {
+    room && socket.emit("join", { room });
+    socket.on("joined", setRoomData);
+    socket.on("recieve", onMessageRecieve);
+    socket.on("status", onStatusChange);
+  };
+
+  useEffect(loadRoom, [room, user]);
 
   return (
     <ChatContext.Provider
       value={{
         room,
-        setRoom,
-        sendMessage,
         messages: roomMessages,
         roomData,
         multipleUsers,
-        loadRoom,
         recents,
-        status: activeStatus
+        status,
+        setRoom,
+        sendMessage,
+        loadRoom,
       }}
     >
       {children}

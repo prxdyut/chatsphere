@@ -7,6 +7,7 @@ import { LuFileUp, LuHardDriveUpload } from "react-icons/lu";
 import { useAuth } from "@clerk/clerk-react";
 import { ChatContext } from "../contexts/chat";
 import { Link } from "react-router-dom";
+import { apiUrl } from "../helper/apiUrl";
 
 export default function ChatSendFile({ button }) {
   const [id] = useState(parseInt(Math.random() * 100));
@@ -35,9 +36,7 @@ export default function ChatSendFile({ button }) {
       formData.append("file", e.target.files[0]);
       setUploading(true);
       const res = await axios
-        .post((location.hostname == "localhost"
-    ? "http://localhost:5000"
-    : "https://api.chatsphere.pradyutdas.online" )+"/uploadfile", formData, {
+        .post(apiUrl+"/uploadfile", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .catch((error) => {

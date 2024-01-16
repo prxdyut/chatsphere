@@ -1,3 +1,5 @@
+import { apiUrl } from "./apiUrl";
+
 export default function newMember(users, room, onError, onSuccess, update) {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -13,9 +15,7 @@ export default function newMember(users, room, onError, onSuccess, update) {
     redirect: "follow",
   };
 
-  fetch((location.hostname == "localhost"
-    ? "http://localhost:5000"
-    : "https://api.chatsphere.pradyutdas.online" ) + "/room", requestOptions)
+  fetch(apiUrl + "/room", requestOptions)
     .then((response) => response.json())
     .then((e) => {
       if (e.error) {
